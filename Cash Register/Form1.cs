@@ -159,7 +159,7 @@ namespace Cash_Register
                   
             Refresh();
             Thread.Sleep(1000);
-
+             
             if (numOfDrinks > 0)
             {
                labelReceiptOutput.Text += $"\nDrinks x{numOfDrinks} @{numOfDrinks * DrinkPrice}";
