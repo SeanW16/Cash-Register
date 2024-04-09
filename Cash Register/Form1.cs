@@ -10,13 +10,16 @@ using System.Windows.Forms;
 using System.Threading;
 using System.Media;
 
+// Sean Woods
+// March/6th/2024
+// Cash register for a fast food store
 namespace Cash_Register
 {
-    public partial class Form1 : Form
+    public partial class cashRegister : Form
     {
-        double BurgerPrice = 3.50;
-        double FryPrice = 1.00;
-        double DrinkPrice = 2.50;
+        double burgerPrice = 3.50; //settings variables
+        double fryPrice = 1.00;
+        double drinkPrice = 2.50;
         int numOfBurgers = 0;
         int numOfFries = 0;
         int numOfDrinks = 0;
@@ -28,7 +31,7 @@ namespace Cash_Register
         double change;
 
 
-        public Form1()
+        public cashRegister()
         {
 
             InitializeComponent();
@@ -40,78 +43,78 @@ namespace Cash_Register
 
         private void buttonCalculate_Click(object sender, EventArgs e)
         {
-            SoundPlayer player = new SoundPlayer(Properties.Resources.ding);
+            SoundPlayer player = new SoundPlayer(Properties.Resources.ding); //PLay sound for when any button is pressed
 
             player.Play();
                
                 try
                 {
-                    numOfBurgers = Convert.ToInt32(textBoxBurgersInput.Text);
-                    numOfFries = Convert.ToInt32(textBoxFriesInput.Text);
-                    numOfDrinks = Convert.ToInt32(textBoxDrinksInput.Text);
+                    numOfBurgers = Convert.ToInt32(burgersInputTextBox.Text); //Calculating the total of the order and printing it to screen
+                    numOfFries = Convert.ToInt32(friesInputTextBox.Text);
+                    numOfDrinks = Convert.ToInt32(drinksInputTextBox.Text);
 
-                    subtotal = (numOfBurgers * BurgerPrice) + (numOfFries * FryPrice) + (numOfDrinks * DrinkPrice);
+                    subtotal = (numOfBurgers * burgerPrice) + (numOfFries * fryPrice) + (numOfDrinks * drinkPrice);
                     tax = subtotal * taxRate;
                     total = subtotal + tax;
 
-                    labelSubtotalOutput.Text = $"{subtotal.ToString(".00")}";
-                    labelTaxOutput.Text = $"{tax.ToString("C")}";
-                    labelTotalOutput.Text = $"{total.ToString("C")}";
+                    subtotalOutputLabel.Text = $"{subtotal.ToString(".00")}";
+                    taxOutputLabel.Text = $"{tax.ToString("C")}";
+                    totalOutputLabel.Text = $"{total.ToString("C")}";
 
-                    buttonCalculateChange.Enabled = true;
+                    calculateChangeButton.Enabled = true;
                 }
                 catch
                 {
-                    labelSubtotalOutput.Text = $"ERROR";
-                    labelTaxOutput.Text = $"ERROR";
-                    labelTotalOutput.Text = $"ERROR";
+                    subtotalOutputLabel.Text = $"ERROR"; // erroring out the program
+                    taxOutputLabel.Text = $"ERROR";
+                    totalOutputLabel.Text = $"ERROR";
                 }
             
             if (numOfBurgers == 0 && numOfDrinks == 0 && numOfFries == 0)
             {
-                buttonCalculateChange.Enabled = false;
-                buttonPrint.Enabled = false;
-                labelSubtotalOutput.Text = $"";
-                labelTaxOutput.Text = $"";
-                labelTotalOutput.Text = $"";
+                calculateChangeButton.Enabled = false; //if nothing id ordered locking all buttons
+                printButton.Enabled = false;
+                subtotalOutputLabel.Text = $"";
+                taxOutputLabel.Text = $"";
+                totalOutputLabel.Text = $"";
             }
         }
 
         private void buttonCalculateChange_Click(object sender, EventArgs e)
         {
-            SoundPlayer player = new SoundPlayer(Properties.Resources.ding);
+            SoundPlayer player = new SoundPlayer(Properties.Resources.ding); //adding sounds
 
             player.Play();
 
             try
             {
-                tendered = Convert.ToDouble(textBoxTenderedInput.Text);
+                tendered = Convert.ToDouble(textBoxTenderedInput.Text); //Calculating amount of change and erroring if tendered is below the total price
 
                 change = tendered - total;
 
-                labelChangeOutput.Text = $"{change.ToString("C")}";
+                changeOutputLabel.Text = $"{change.ToString("C")}";
 
                 if(tendered > total||tendered == total)
                 {
-                    buttonPrint.Enabled = true;
+                    printButton.Enabled = true;
                 }
 
                 if (tendered < total)
                 {
-                    labelChangeOutput.Text = $"INSUFICENT FUNDS";
-                    buttonPrint.Enabled = false;
+                    changeOutputLabel.Text = $"INSUFICENT FUNDS";
+                    printButton.Enabled = false;
                 }
             }
             catch
             {
-                labelChangeOutput.Text = $"INCORRECT CURRENCEY";
+                changeOutputLabel.Text = $"INCORRECT CURRENCEY"; //erroring if numbers are not entered
             }
 
         }
 
         private void buttonPrint_Click(object sender, EventArgs e)
         {
-            SoundPlayer player = new SoundPlayer(Properties.Resources.ding);
+            SoundPlayer player = new SoundPlayer(Properties.Resources.ding); //adding sounds
             SoundPlayer player2 = new SoundPlayer(Properties.Resources.printerSound2);
             SoundPlayer player3 = new SoundPlayer(Properties.Resources.explosion1);
 
@@ -122,90 +125,90 @@ namespace Cash_Register
           
             player2.Play();
 
-            labelReceiptOutput.AutoSize = true;
+            receiptOutputLabel.AutoSize = true; //printing receipt
 
-            labelReceiptOutput.Text = $"Big Boy Burger Inc.";
+            receiptOutputLabel.Text = $"Big Boy Burger Inc.";
             Refresh();
             Thread.Sleep(1000);
-            labelReceiptOutput.Text += $"\n\nOrder Number 385";
+            receiptOutputLabel.Text += $"\n\nOrder Number 385";
             Refresh();
             Thread.Sleep(1000);
-            labelReceiptOutput.Text += $"\nDate November 13 4329";
+            receiptOutputLabel.Text += $"\nDate November 13 4329";
             Refresh();
             Thread.Sleep(1000);
 
-            if (numOfBurgers > 0)
+            if (numOfBurgers > 0) //printing if there is a order of burgers
             {
-               labelReceiptOutput.Text += $"\n\nHamburgers x{numOfBurgers} @{numOfBurgers * BurgerPrice}";
+               receiptOutputLabel.Text += $"\n\nHamburgers x{numOfBurgers} @{numOfBurgers * burgerPrice}";
             }
 
-            if(numOfBurgers == 0)
+            if(numOfBurgers == 0) //not printing if there is no order of burgers
             {
-               labelReceiptOutput.Text += $"";
+               receiptOutputLabel.Text += $"";
             }
 
             Refresh();
             Thread.Sleep(1000);
 
-            if (numOfFries > 0)
+            if (numOfFries > 0) //printing if there is a order of fries
             {
-               labelReceiptOutput.Text += $"\nFries x{numOfFries} @{numOfFries * FryPrice}";
+               receiptOutputLabel.Text += $"\nFries x{numOfFries} @{numOfFries * fryPrice}";
             }
 
-            if (numOfFries == 0)
+            if (numOfFries == 0) //not printing if there is no order of fries
             {
-               labelReceiptOutput.Text += $"";
+               receiptOutputLabel.Text += $"";
             }
                   
             Refresh();
             Thread.Sleep(1000);
              
-            if (numOfDrinks > 0)
+            if (numOfDrinks > 0) //printing if there is a order of fries
             {
-               labelReceiptOutput.Text += $"\nDrinks x{numOfDrinks} @{numOfDrinks * DrinkPrice}";
+               receiptOutputLabel.Text += $"\nDrinks x{numOfDrinks} @{numOfDrinks * drinkPrice}";
             }
 
-            if (numOfDrinks == 0)
+            if (numOfDrinks == 0) //not printing if there is no order of drinks
             {
-               labelReceiptOutput.Text += $"";
+               receiptOutputLabel.Text += $"";
             }
 
+            Refresh(); //printing the totals
+            Thread.Sleep(1000);
+            receiptOutputLabel.Text += $"\n\nSubtotal {subtotal.ToString("C")}";
             Refresh();
             Thread.Sleep(1000);
-            labelReceiptOutput.Text += $"\n\nSubtotal {subtotal.ToString("C")}";
+            receiptOutputLabel.Text += $"\nTax {tax.ToString("C")}";
             Refresh();
             Thread.Sleep(1000);
-            labelReceiptOutput.Text += $"\nTax {tax.ToString("C")}";
+            receiptOutputLabel.Text += $"\nTotal {total.ToString("C")}";          
             Refresh();
             Thread.Sleep(1000);
-            labelReceiptOutput.Text += $"\nTotal {total.ToString("C")}";          
+            receiptOutputLabel.Text += $"\n\nTendered {tendered.ToString("C")}";
             Refresh();
             Thread.Sleep(1000);
-            labelReceiptOutput.Text += $"\n\nTendered {tendered.ToString("C")}";
-            Refresh();
-            Thread.Sleep(1000);
-            labelReceiptOutput.Text += $"\nChange {change.ToString("C")}";
+            receiptOutputLabel.Text += $"\nChange {change.ToString("C")}";
             Refresh();
             Thread.Sleep(1000);
 
             player2.Stop();
 
-            if (numOfBurgers == 99999 &&numOfDrinks == 99999 && numOfFries == 99999)
+            if (numOfBurgers == 99999 &&numOfDrinks == 99999 && numOfFries == 99999) //easter egg
             {                
                 player3.Play();
-                labelReceiptOutput.Text = $"Hello Will";
-                labelReceiptOutput.Text += $"\nYour immense size";
-                labelReceiptOutput.Text += $"\nHas reached a scale";
-                labelReceiptOutput.Text += $"\nWhere it is starting";
-                labelReceiptOutput.Text += $"\nTo lag out the simulation of life";
-                labelReceiptOutput.Text += $"\nPlease stop consuming so much food";
+                receiptOutputLabel.Text = $"Hello Will";
+                receiptOutputLabel.Text += $"\nYour immense size";
+                receiptOutputLabel.Text += $"\nHas reached a scale";
+                receiptOutputLabel.Text += $"\nWhere it is starting";
+                receiptOutputLabel.Text += $"\nTo lag out the simulation of life";
+                receiptOutputLabel.Text += $"\nPlease stop consuming so much food";
             }
             
         }
 
         private void buttonNewOrder_Click(object sender, EventArgs e)
         {
-            numOfBurgers = 0;
+            numOfBurgers = 0; //restting all variables
             numOfFries = 0;
             numOfDrinks = 0;
             subtotal = 0;
@@ -213,17 +216,19 @@ namespace Cash_Register
             total = 0;
             tendered = 0;
             change = 0;
-            labelReceiptOutput.Text = $"";
-            labelReceiptOutput.BackColor = Color.White;
-            labelReceiptOutput.AutoSize = false;
-            textBoxBurgersInput.Text = $"";
-            textBoxFriesInput.Text = $"";
-            textBoxDrinksInput.Text = $"";            
-            labelSubtotalOutput.Text = $"";
-            labelTaxOutput.Text = $"";
-            labelTotalOutput.Text =$"";
+            receiptOutputLabel.Text = $"";
+            receiptOutputLabel.BackColor = Color.White;
+            receiptOutputLabel.AutoSize = false;
+            burgersInputTextBox.Text = $"";
+            friesInputTextBox.Text = $"";
+            drinksInputTextBox.Text = $"";            
+            subtotalOutputLabel.Text = $"";
+            taxOutputLabel.Text = $"";
+            totalOutputLabel.Text =$"";
             textBoxTenderedInput.Text = $"";
-            labelChangeOutput.Text = $"";
+            changeOutputLabel.Text = $"";
         }
+
+
     }
 }
